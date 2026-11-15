@@ -1,0 +1,19 @@
+name: CI (shared)
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  ci:
+    uses: lokesh-ag/gha-shared-workflows/.github/workflows/python-ci.yml@v1
+    with:
+      python-version: '3.12'
+      working-directory: app
+    secrets: inherit
+
+  after:
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Shared CI said ${{ needs.ci.outputs.result }}"
