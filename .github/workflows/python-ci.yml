@@ -1,0 +1,38 @@
+name: Reusable Python CI
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        type: string
+        default: '3.12'
+      working-directory:
+        type: string
+        default: '.'
+    secrets:
+      SLACK_WEBHOOK:
+        required: false
+    outputs:
+      result:
+        description: Test result
+        value: ${{ jobs.test.outputs.result }}
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.done.outputs.result }}
+    steps:
+      - uses: actions/checkout@v4          # checks out the CALLER's repo
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ inputs.python-version }}
+      - working-directory: ${{ inputs.working-directory }}
+        run: |
+          pip install -r requirements.txt
+          pytest -v
+      - id: done
+        run: echo "result=passed" >> "$GITHUB_OUTPUT"
