@@ -8,3 +8,5 @@ def test_add():
 def test_health():
     client = app.test_client()
     assert client.get("/health").json == {"status": "ok"}
+
+    
