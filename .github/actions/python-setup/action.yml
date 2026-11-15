@@ -1,0 +1,20 @@
+name: Python setup
+description: Set up Python with pip cache and install requirements
+inputs:
+  python-version:
+    description: Python version
+    default: '3.12'
+  requirements:
+    description: Path to requirements file
+    default: app/requirements.txt
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+        cache: pip
+        cache-dependency-path: ${{ inputs.requirements }}
+    - name: Install dependencies
+      shell: bash                # run steps in a composite action MUST set shell
+      run: pip install -r ${{ inputs.requirements }}
